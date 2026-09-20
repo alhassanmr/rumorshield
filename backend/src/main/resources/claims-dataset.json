@@ -1,0 +1,139 @@
+{
+  "_readme": "Curated Ghanaian civic knowledge base for RumorShield. Each record is a known, source-verified fact or debunked claim. Incoming user claims are matched against these records by InternalReasoningEngine (rule-based extraction + templated explanation) and ClaimMatchingService (deterministic verdict logic) — no LLM or external API is involved anywhere in the pipeline.",
+  "records": [
+    {
+      "id": "ghanacard-renewal-fee-2026",
+      "topic": "Ghana Card",
+      "subject": "Ghana Card annual renewal fee (district office)",
+      "verifiedFact": "Annual Ghana Card renewal at NIA district offices costs GHS 150, effective 2 February 2026.",
+      "relatedFacts": [
+        "First-time registration (25+ years) at district offices: GHS 30",
+        "Registration for persons below 25: free",
+        "Card replacement at district offices: GHS 200",
+        "Nationality update: GHS 200",
+        "Foreign nationals: renewal costs the cedi equivalent of USD 78/year"
+      ],
+      "sourceName": "National Identification Authority (NIA) press release",
+      "sourceUrl": "https://www.graphic.com.gh/news/general-news/ghana-card-replacement-set-at-ghc200-under-new-nia-fees.html",
+      "sourceType": "official",
+      "publishedDate": "2026-01-26",
+      "effectiveDate": "2026-02-02",
+      "status": "reference",
+      "notes": "Legal basis: Fees and Charges (Miscellaneous Provisions)(Amendment) Regulations 2025, L.I. 2512. In August 2026 the NIA publicly rebutted circulating reports as 'misleading', confirming the fee schedule was parliamentary-approved, not unilaterally imposed — good real example of an institution responding to misinformation."
+    },
+    {
+      "id": "ghanacard-prestige-centre-fee",
+      "topic": "Ghana Card",
+      "subject": "Ghana Card fees at the 24-Hour Prestige Registration Centre (Labone)",
+      "verifiedFact": "At the Prestige Centre, first-time registration and renewal each cost GHS 610; replacement costs GHS 720. This is a separate, optional premium service — not the standard fee.",
+      "sourceName": "NIA / Pulse Ghana",
+      "sourceUrl": "https://www.pulse.com.gh/story/ghana-card-new-nia-fees-list-2026081909522030623",
+      "sourceType": "news",
+      "publishedDate": "2026-08-19",
+      "status": "reference",
+      "notes": "Useful for a claim like 'Ghana Card now costs GHS 610' — true only for the optional Prestige Centre, not district offices. Good demo of nuance beyond true/false."
+    },
+    {
+      "id": "nhis-free-renewal-promo-2026",
+      "topic": "NHIS",
+      "subject": "Free NHIS registration/renewal promotion",
+      "verifiedFact": "NHIS ran a free registration and renewal promo (normal fees and 30-day waiting period waived) from 15 April to 31 May 2026, under the Mahama Care primary healthcare initiative.",
+      "sourceName": "NHIS official promo announcement",
+      "sourceUrl": "https://ghanaeducation.org/how-to-register-or-renew-nhis-card-for-free-in-2026/",
+      "sourceType": "official",
+      "publishedDate": "2026-04-19",
+      "expiryDate": "2026-05-31",
+      "status": "outdated_as_of_today",
+      "notes": "PERFECT for the OUTDATED status demo: a claim that 'NHIS registration is free right now' was TRUE during the promo window but is FALSE as of any date after 31 May 2026 (i.e. false today, 14 Sept 2026). Normal premium outside promo: GHS 7-50/year depending on source, varies by district — flag as approximate, not a hard verified figure."
+    },
+    {
+      "id": "passport-standard-fee-2026",
+      "topic": "Passport",
+      "subject": "Standard 32-page passport application fee",
+      "verifiedFact": "The standard 32-page Ghanaian passport costs GHS 350, down from GHS 500, effective 13 November 2025 following Cabinet and Parliamentary approval.",
+      "sourceName": "Ministry of Foreign Affairs / ghanacitizenship.com reform summary",
+      "sourceUrl": "https://ghanacitizenship.com/ghana-passport-reforms/",
+      "sourceType": "official",
+      "publishedDate": "2025-11-13",
+      "status": "reference",
+      "notes": "IMPORTANT: other sources (a Ghana News Page article dated April 2026, and Wikipedia) list GHS 500 or GHS 640 for the same passport — these are stale/aggregator figures that never updated after the Nov 2025 cut. This is a genuinely useful CONTRADICTED demo case: a user claim of 'passport costs GHS 500' would be flagged against the more authoritative, more recent MFA-sourced figure of GHS 350."
+    },
+    {
+      "id": "passport-expedited-fee-2026",
+      "topic": "Passport",
+      "subject": "24-hour expedited passport processing fee",
+      "verifiedFact": "A 24-hour expedited passport application service costs GHS 2,000, introduced as part of the passport reforms programme.",
+      "sourceName": "Ministry of Foreign Affairs briefing",
+      "sourceUrl": "https://mfa.gov.gh/index.php/minister-for-foreign-affairs-outlines-significant-achievements-in-passport-reforms/",
+      "sourceType": "official",
+      "publishedDate": "2025-11-12",
+      "status": "reference"
+    },
+    {
+      "id": "hoax-mahama-1500-cash-grant",
+      "topic": "Government payments",
+      "subject": "Claim: President Mahama is giving out a GHS 1,500 'development cash grant'",
+      "verifiedFact": "This is a confirmed SCAM, not a real government programme. It uses a fake website with official state symbols, asks users to share the link to WhatsApp groups to 'unlock' the payment, and never pays out — a classic engagement-harvesting hoax.",
+      "sourceName": "GhanaFact (FactSpace West Africa) fact-check",
+      "sourceUrl": "https://ghanafact.com/hoax-whatsapp-message-about-president-mahamas-gh%C2%A21500-development-cash-grant-is-a-scam/",
+      "sourceType": "factcheck",
+      "publishedDate": "2026-02-05",
+      "status": "contradicted",
+      "notes": "Excellent CONTRADICTED demo claim — real hoax, real fact-check, very close in style to genuine viral WhatsApp scams your users will encounter."
+    },
+    {
+      "id": "hoax-goldbod-200m-loss",
+      "topic": "Government agencies",
+      "subject": "Claim: GoldBod lost GHS 200 million to a former security guard",
+      "verifiedFact": "False. GoldBod publicly clarified via its official website and X account that the claim was untrue. It originated as a viral flyer on Facebook and X.",
+      "sourceName": "GhanaFact narrative report",
+      "sourceUrl": "https://ghanafact.com/viral-flyers-ai-scam-fake-notice-how-goldbod-npp-police-others-fought-digital-misinformation-in-august/",
+      "sourceType": "factcheck",
+      "publishedDate": "2026-08-03",
+      "status": "contradicted"
+    },
+    {
+      "id": "hoax-us-military-bases-closed",
+      "topic": "Foreign policy",
+      "subject": "Claim: President Mahama closed down all US military bases in Ghana",
+      "verifiedFact": "False, per GhanaFact's research.",
+      "sourceName": "GhanaFact fact-check archive",
+      "sourceUrl": "https://ghanafact.com/fact-check/us/",
+      "sourceType": "factcheck",
+      "publishedDate": "2026-01-01",
+      "status": "contradicted",
+      "notes": "Publish date approximate — archive listing did not give exact date; verify before using in final demo if precision matters."
+    },
+    {
+      "id": "ghpolice-clearance-fee-2026",
+      "topic": "Ghana Police",
+      "subject": "Police clearance certificate fee (ordinary vetting, resident)",
+      "verifiedFact": "An ordinary police clearance certificate (resident) costs GHS 150, payable at Nima Divisional Police Headquarters, Accra, plus two passport-size pictures with red background.",
+      "relatedFacts": [
+        "Nominal vetting (non-resident): GHS 2,000",
+        "Employment vetting / fingerprint request (CID Form 59): GHS 100",
+        "Authentication of police clearance: GHS 50",
+        "Police accident report: GHS 80",
+        "Investigation report: GHS 150"
+      ],
+      "sourceName": "Ghana Police Service — official Paid Services fee schedule",
+      "sourceUrl": "https://police.gov.gh/en/index.php/paid-police-services/",
+      "sourceType": "official",
+      "publishedDate": "2026-01-01",
+      "status": "reference",
+      "notes": "Published by the GPS Public Affairs Directorate explicitly 'to reduce the perception of corruption' — good citable framing for the demo. Exact publish date not shown on the page; treat as current as of research date (Sept 2026)."
+    },
+    {
+      "id": "hoax-police-recruitment-scam",
+      "topic": "Ghana Police",
+      "subject": "Claim: guaranteed Ghana Police Service recruitment slots available for a fee",
+      "verifiedFact": "Recurring scam pattern, not a real recruitment channel. Criminal syndicates — sometimes involving rogue officials — have repeatedly advertised fake enlistment slots in the Ghana Police Service in exchange for payment. A 2014 case implicated a senior police officer (DCOP Patrick Timbilla) in exactly this scheme. The Police Service does not sell recruitment slots; official recruitment goes through its own published, fee-free process.",
+      "sourceName": "Ghana Police Service recruitment-scam pattern (background via Wikipedia, citing GhanaWeb/MyJoyOnline reporting)",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Ghanaian_Police_Recruitment_Scam",
+      "sourceType": "news",
+      "publishedDate": "2016-12-21",
+      "status": "contradicted",
+      "notes": "This is a recurring pattern rather than one dated claim — treat any 'pay for a guaranteed police job' message as matching this record regardless of which year it resurfaces in."
+    }
+  ]
+}

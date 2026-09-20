@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: rumorshield-db
+    environment:
+      POSTGRES_DB: rumorshield
+      POSTGRES_USER: rumorshield
+      POSTGRES_PASSWORD: rumorshield
+    ports:
+      - "5432:5432"
+    volumes:
+      - rumorshield-data:/var/lib/postgresql/data
+
+volumes:
+  rumorshield-data:

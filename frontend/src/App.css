@@ -1,0 +1,324 @@
+:root {
+  /* Color: a cool paper tone (not warm cream) paired with ink navy and a
+     brass accent used sparingly for the institutional/seal motif. Verdict
+     colors are functional, not decorative - each one only appears when
+     that verdict is actually shown. */
+  --ink: #16233b;
+  --ink-soft: #3d4a63;
+  --paper: #eae7dd;
+  --paper-raised: #f6f4ec;
+  --brass: #a8792a;
+  --rule: #d6d0bf;
+
+  --verified: #1f7a5c;
+  --verified-bg: #e9f2ed;
+  --contradicted: #9c3b28;
+  --contradicted-bg: #f5e9e5;
+  --outdated: #a8792a;
+  --outdated-bg: #f4ecdd;
+  --unverified: #5b6472;
+  --unverified-bg: #eceef0;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.55;
+}
+
+.page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 5rem;
+}
+
+/* ---------- Masthead ---------- */
+
+.masthead {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.75rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--ink);
+}
+
+.masthead__seal {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border: 1.5px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+
+.masthead h1 {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.masthead__tagline {
+  margin: 0.15rem 0 0;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+/* ---------- Intake form ---------- */
+
+.intake {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.intake__label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.6rem;
+  color: var(--ink);
+}
+
+.intake__field {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 0.85rem;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: #fff;
+  color: var(--ink);
+  resize: vertical;
+}
+
+.intake__field:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+.intake__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.intake__examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.intake__example-chip {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.intake__example-chip:hover {
+  border-color: var(--ink-soft);
+  color: var(--ink);
+}
+
+.intake__submit {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: var(--ink);
+  color: var(--paper-raised);
+  border: none;
+  border-radius: 3px;
+  padding: 0.7rem 1.4rem;
+  cursor: pointer;
+}
+
+.intake__submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.intake__submit:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+
+/* ---------- Empty state / error ---------- */
+
+.empty-state {
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  max-width: 46ch;
+}
+
+.error-banner {
+  background: var(--contradicted-bg);
+  border-left: 3px solid var(--contradicted);
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  color: var(--contradicted);
+}
+
+/* ---------- Report card ---------- */
+
+.report {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-left: 5px solid var(--unverified);
+  border-radius: 3px;
+  padding: 1.75rem;
+}
+
+.report.verdict--verified { border-left-color: var(--verified); }
+.report.verdict--contradicted { border-left-color: var(--contradicted); }
+.report.verdict--outdated { border-left-color: var(--outdated); }
+.report.verdict--unverified { border-left-color: var(--unverified); }
+
+.report__header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.report__mark {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  background: var(--unverified-bg);
+  color: var(--unverified);
+}
+
+.verdict--verified .report__mark { background: var(--verified-bg); color: var(--verified); }
+.verdict--contradicted .report__mark { background: var(--contradicted-bg); color: var(--contradicted); }
+.verdict--outdated .report__mark { background: var(--outdated-bg); color: var(--outdated); }
+
+.report__verdict {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.report__meta {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+}
+
+.report__claim {
+  font-style: italic;
+  color: var(--ink-soft);
+  border-left: 2px solid var(--rule);
+  padding-left: 0.9rem;
+  margin: 0 0 1.3rem;
+}
+
+.report__section {
+  margin-bottom: 1.3rem;
+}
+
+.report__section h3 {
+  font-size: 0.85rem;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  color: var(--ink-soft);
+  margin: 0 0 0.4rem;
+  font-weight: 600;
+}
+
+.report__section p {
+  margin: 0;
+}
+
+.report__sources {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.report__sources li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.report__source-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 2px;
+  background: var(--unverified-bg);
+  color: var(--unverified);
+}
+
+.report__source-tag--official { background: var(--verified-bg); color: var(--verified); }
+.report__source-tag--factcheck { background: var(--contradicted-bg); color: var(--contradicted); }
+.report__source-tag--news { background: var(--outdated-bg); color: var(--outdated); }
+
+.report__sources a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+}
+
+.report__source-date {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+
+.report__recommendation {
+  border-top: 1px solid var(--rule);
+  padding-top: 1rem;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 1.5rem 1rem 3rem;
+  }
+  .masthead h1 {
+    font-size: 1.5rem;
+  }
+}
