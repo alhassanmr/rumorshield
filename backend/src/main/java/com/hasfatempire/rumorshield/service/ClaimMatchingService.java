@@ -95,9 +95,21 @@ public class ClaimMatchingService {
         // many words with it even when topic-label detection (above) finds
         // nothing, because nobody phrases a claim using our internal topic
         // labels like "Government payments".
+        //
+        // Words that are part of the record's own TOPIC are excluded here,
+        // because they're already credited by the topic-word bonus loop above.
+        // Without this exclusion, any record sharing a topic with the correct
+        // match (e.g. two different Ghana Police records) gets an inflated,
+        // duplicate score just for restating "Ghana Police" in its subject -
+        // even when its actual content has nothing to do with the claim.
+        java.util.Set<String> topicWords = Arrays.stream(recordTopic.split("\\s+"))
+                .map(w -> w.replaceAll("[^a-z0-9]", ""))
+                .collect(java.util.stream.Collectors.toSet());
         for (String word : recordSubject.split("\\s+")) {
             String cleaned = word.replaceAll("[^a-z0-9]", "");
-            if (cleaned.length() > 4 && rawText.contains(cleaned)) score += 1;
+            if (cleaned.length() > 4 && !topicWords.contains(cleaned) && rawText.contains(cleaned)) {
+                score += 1;
+            }
         }
 
         return score;
