@@ -108,6 +108,28 @@ This matters enough to call out on its own. Three distinct outcomes, not one fla
 This is the practical answer to "what if someone searches something we haven't curated" — it
 degrades gracefully by topic-area rather than by individual claim.
 
+## Bug fixes (found via real testing)
+
+Two real bugs were caught by testing actual claims against the running app, not by code review:
+
+1. **Hoax claims scored too low to match at all.** `InternalReasoningEngine`'s topic
+   detector only recognized a topic if the literal category label (e.g. "Government
+   payments") appeared verbatim in the claim text — but nobody phrases a claim that
+   way. Fixed by adding a scoring pass in `ClaimMatchingService` that compares the raw
+   claim text directly against each record's full `subject` field, which works
+   because hoax records' subjects are written to mirror how the real claim is phrased.
+
+2. **Amount extraction grabbed the wrong number.** The regex used to pull a currency
+   figure out of free text matched *any* number, so "24-hour expedited passport
+   service costs GHS 2000" extracted "24" (from "24-hour") instead of "2000" — and
+   the same bug bit again when reading the matched record's own fact text ("32-page"
+   in the passport-standard record, for example). Fixed by requiring a currency
+   indicator (GHS/GH₵/cedis) immediately before the number in both places.
+
+If you hit a claim that still matches the wrong record or extracts a wrong number,
+it's worth checking these two spots first — `InternalReasoningEngine.detectClaimedValue`
+and `ClaimMatchingService.score` / `extractCurrencyNumber`.
+
 ## Next: extend the dataset
 
 Add more records to `src/main/resources/claims-dataset.json` in the same

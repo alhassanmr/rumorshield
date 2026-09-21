@@ -32,6 +32,13 @@ public class ClaimMatchingService {
 
     private static final Pattern NUMBER = Pattern.compile("\\d+(?:\\.\\d+)?");
 
+    // Used specifically for parsing full sentences (a record's verifiedFact
+    // text), where a bare-number regex would wrongly grab incidental numbers
+    // like the "24" in "24-hour" or "32" in "32-page" instead of the actual
+    // fee. Requires a currency indicator immediately before the number.
+    private static final Pattern CURRENCY_NUMBER = Pattern.compile(
+            "(?:GH[SC¢₵]|cedis?)\\s*([\\d]{1,3}(?:,\\d{3})*(?:\\.\\d+)?)", Pattern.CASE_INSENSITIVE);
+
     public record MatchResult(ClaimRecord record, Verdict verdict, String evidenceStrength) {
         public static MatchResult noMatch() {
             return new MatchResult(null, Verdict.UNVERIFIED, "Low");
@@ -80,6 +87,19 @@ public class ClaimMatchingService {
             if (word.length() > 3 && rawText.contains(word)) score += 1;
         }
 
+        // Bonus: direct overlap between the raw claim text and the record's full
+        // subject description. This matters most for hoax records, where the
+        // subject field is written to closely mirror how the real claim is
+        // phrased (e.g. "Claim: President Mahama is giving out a GHS 1,500
+        // development cash grant") - so a real claim about that hoax may share
+        // many words with it even when topic-label detection (above) finds
+        // nothing, because nobody phrases a claim using our internal topic
+        // labels like "Government payments".
+        for (String word : recordSubject.split("\\s+")) {
+            String cleaned = word.replaceAll("[^a-z0-9]", "");
+            if (cleaned.length() > 4 && rawText.contains(cleaned)) score += 1;
+        }
+
         return score;
     }
 
@@ -94,9 +114,13 @@ public class ClaimMatchingService {
         }
 
         // status == "reference": compare the claimed numeric value (if any)
-        // against the verified fact's numeric value (if any).
+        // against the verified fact's numeric value (if any). claim.getClaimedValue()
+        // is already a bare number extracted upstream (InternalReasoningEngine),
+        // so the plain NUMBER regex is fine there. record.getVerifiedFact() is a
+        // full sentence that may contain OTHER incidental numbers (page counts,
+        // hour counts, dates) - that one needs the currency-anchored extraction.
         Optional<String> claimedNumber = extractNumber(claim.getClaimedValue());
-        Optional<String> verifiedNumber = extractNumber(record.getVerifiedFact());
+        Optional<String> verifiedNumber = extractCurrencyNumber(record.getVerifiedFact());
 
         if (claimedNumber.isPresent() && verifiedNumber.isPresent()) {
             return claimedNumber.get().equals(verifiedNumber.get())
@@ -113,6 +137,12 @@ public class ClaimMatchingService {
         if (text == null) return Optional.empty();
         Matcher m = NUMBER.matcher(text.replace(",", ""));
         return m.find() ? Optional.of(m.group()) : Optional.empty();
+    }
+
+    private Optional<String> extractCurrencyNumber(String text) {
+        if (text == null) return Optional.empty();
+        Matcher m = CURRENCY_NUMBER.matcher(text);
+        return m.find() ? Optional.of(m.group(1).replace(",", "")) : Optional.empty();
     }
 
     private boolean containsAnyWord(String haystack, String needlePhrase) {

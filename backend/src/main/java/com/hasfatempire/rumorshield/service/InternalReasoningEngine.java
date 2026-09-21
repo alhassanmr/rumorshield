@@ -39,7 +39,7 @@ public class InternalReasoningEngine {
     private final ClaimDatasetService datasetService;
 
     private static final Pattern AMOUNT = Pattern.compile(
-            "(?:GH[SC¢₵]?\\s*)?([\\d]{1,3}(?:,\\d{3})*(?:\\.\\d+)?)", Pattern.CASE_INSENSITIVE);
+            "(?:GH[SC¢₵]|cedis?)\\s*([\\d]{1,3}(?:,\\d{3})*(?:\\.\\d+)?)", Pattern.CASE_INSENSITIVE);
 
     private static final List<String> SUBJECT_KEYWORDS = List.of(
             "renewal", "replacement", "registration", "fee", "cost", "grant",
@@ -105,6 +105,11 @@ public class InternalReasoningEngine {
         if (lowerText.contains("free")) {
             return "free";
         }
+        // Deliberately requires a currency indicator (GHS/GH₵/cedis) before the
+        // number. Without this, a bare-number regex picks up incidental numbers
+        // like the "24" in "24-hour" or "32" in "32-page" instead of the actual
+        // amount. Real Ghanaian civic claims about money almost always include
+        // a currency marker, so this trade-off is safe in practice.
         Matcher m = AMOUNT.matcher(lowerText);
         if (m.find()) {
             return m.group(1).replace(",", "");
