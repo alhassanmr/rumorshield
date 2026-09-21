@@ -11,27 +11,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Replaces the two former LLM calls (claim extraction + explanation) with
- * deterministic, keyword/regex/template logic. No external API, no network
- * call, no API key, no per-request cost, works fully offline.
- *
- * This is a genuine trade-off, not a free upgrade - be upfront about it if
- * asked:
- *   + Zero cost, zero dependency, fully auditable, works offline
- *   + Even stronger version of "the AI doesn't decide what's true" pitch,
- *     since now nothing in the pipeline is a model call at all
- *   - Extraction only recognizes topics/amounts it has keyword rules for.
- *     A claim phrased in a way that shares no vocabulary with the curated
- *     dataset (e.g. heavy slang, another language) may extract poorly.
- *     ClaimMatchingService partly compensates for this already, since its
- *     scoring also scans raw text directly against each record's topic
- *     keywords - but genuinely novel phrasing is the known weak point.
- *   - Explanations are template sentences filled with record data, not
- *     free-form prose - reads a little more mechanical than an LLM
- *     explanation, but every word traces directly to a field you can point
- *     to, which is arguably a feature for an evidence-transparency pitch.
- */
 @Service
 @RequiredArgsConstructor
 public class InternalReasoningEngine {
@@ -39,23 +18,13 @@ public class InternalReasoningEngine {
     private final ClaimDatasetService datasetService;
 
     private static final Pattern AMOUNT = Pattern.compile(
-            "(?:GH[SC¢₵]|cedis?)\\s*([\\d]{1,3}(?:,\\d{3})*(?:\\.\\d+)?)", Pattern.CASE_INSENSITIVE);
+            "(?:GH[SC¢₵]|cedis?)\\s*(\\d[\\d,]*(?:\\.\\d+)?)", Pattern.CASE_INSENSITIVE);
 
     private static final List<String> SUBJECT_KEYWORDS = List.of(
             "renewal", "replacement", "registration", "fee", "cost", "grant",
             "promo", "free", "closed", "lost", "shut down", "expedited", "24-hour"
     );
 
-    /**
-     * General official portal per recognized topic - used as a fallback
-     * pointer when we recognize the TOPIC of a claim but have no specific
-     * matching record for it. This is the answer to "what happens when
-     * someone searches something not in the dataset": rather than a flat
-     * dead-end, if we at least know the topic area, we point to where the
-     * real authority for that topic publishes information. If the topic
-     * itself isn't recognized either, there's no portal to offer and the
-     * response says so plainly instead of guessing.
-     */
     private static final java.util.Map<String, String> TOPIC_PORTALS = java.util.Map.of(
             "Ghana Card", "https://nia.gov.gh",
             "NHIS", "https://nhis.gov.gh",
@@ -64,8 +33,6 @@ public class InternalReasoningEngine {
             "Government payments", "https://mofep.gov.gh",
             "Foreign policy", "https://mfa.gov.gh"
     );
-
-    // ---------- Extraction (replaces LlmService.extractClaim) ----------
 
     public ExtractedClaim extractClaim(String rawText) {
         String lower = rawText.toLowerCase(Locale.ROOT);
@@ -83,9 +50,6 @@ public class InternalReasoningEngine {
     }
 
     private String detectTopic(String lowerText) {
-        // Compare against every distinct topic already in the curated dataset,
-        // so adding a new topic to claims-dataset.json automatically extends
-        // what this engine can recognize - no code change needed.
         return datasetService.getAllRecords().stream()
                 .map(ClaimRecord::getTopic)
                 .distinct()
@@ -105,19 +69,12 @@ public class InternalReasoningEngine {
         if (lowerText.contains("free")) {
             return "free";
         }
-        // Deliberately requires a currency indicator (GHS/GH₵/cedis) before the
-        // number. Without this, a bare-number regex picks up incidental numbers
-        // like the "24" in "24-hour" or "32" in "32-page" instead of the actual
-        // amount. Real Ghanaian civic claims about money almost always include
-        // a currency marker, so this trade-off is safe in practice.
         Matcher m = AMOUNT.matcher(lowerText);
         if (m.find()) {
             return m.group(1).replace(",", "");
         }
         return "";
     }
-
-    // ---------- Explanation (replaces LlmService.explainVerdict) ----------
 
     public String explainVerdict(ExtractedClaim claim, ClaimRecord record, Verdict verdict) {
         if (record == null) {
@@ -148,14 +105,6 @@ public class InternalReasoningEngine {
         return isoDate == null ? "date unknown" : isoDate;
     }
 
-    /**
-     * Two distinct cases, deliberately worded differently:
-     *  1. We recognized the topic (e.g. "Ghana Police") but have no specific
-     *     record for this exact claim yet - point to the real official
-     *     portal for that topic, so the person isn't left with nothing.
-     *  2. We didn't recognize the topic at all - say so plainly rather than
-     *     guessing at a source we're not actually confident covers it.
-     */
     private String buildNoMatchExplanation(ExtractedClaim claim) {
         String topic = claim.getTopic();
         String portal = (topic != null && !topic.isBlank()) ? TOPIC_PORTALS.get(topic) : null;
